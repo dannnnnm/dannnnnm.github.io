@@ -1,0 +1,22 @@
+img{
+    height:20em
+}
+.higher-details{
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
+.middle-details{
+    padding-bottom: 60px;
+}
+
+.lower-details{
+    padding-bottom: 80px;
+}
+.starn{
+    font-size: 190%;
+}
+.stary{
+    font-size: 190%;
+    color: yellow;
+}
