@@ -1,5 +1,5 @@
 img{
-    height:20em
+    height:20em;
 }
 .higher-details{
     padding-top: 60px;
@@ -19,4 +19,15 @@ img{
 .stary{
     font-size: 190%;
     color: yellow;
+}
+
+
+
+.header-row{
+    min-height: 20000px;
+}
+
+.big-text{
+    min-height: 100px; 
+    padding-top: 5%;
 }
