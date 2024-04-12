@@ -166,11 +166,11 @@ class Character {
 }
 
 function attack(attacker,attacked){
-    if (!attacker.isAlive){
+    if (!attacker.isAlive()){
         console.log("attacker is dead")
         return;
     }
-    if (!attacked.isAlive){
+    if (!attacked.isAlive()){
         console.log("attacked is dead!")
         return;
     }
