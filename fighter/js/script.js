@@ -135,6 +135,9 @@ class Character {
     document.getElementById("p2-health").innerText=enemy.health+"/"+enemy.maxhealth;
 
     let percentage=(hero.health/hero.maxhealth)*100;
+    if (percentage<0){
+        percentage=0;
+    }
     console.log("hero percent ",percentage)
     heroBar.setAttribute("aria-valuenow",percentage);
     heroBar.style.width=percentage+"%";
@@ -142,6 +145,9 @@ class Character {
     heroBar.offsetHeight;
 
     percentage=(enemy.health/enemy.maxhealth)*100;
+    if (percentage<0){
+        percentage=0;
+    }
     enemyBar.setAttribute("aria-valuenow",percentage);
     enemyBar.style.width=percentage+"%";
 
