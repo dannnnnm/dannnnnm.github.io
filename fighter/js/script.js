@@ -74,10 +74,25 @@ class Character {
   const enemy = new Character("Limo", getRndInteger(1,100), 40);
   let heroBar=document.getElementById("heroHealth");
   let enemyBar=document.getElementById("enemyHealth");
+
+  //repres
+  let heroRepr=document.getElementById("heroRepr")
+  let enemyRepr=document.getElementById("enemyRepr")
     
   function setup(){
+    
     heroBar.setAttribute("aria-valuemax",hero.maxhealth);
-    enemyBar.setAttribute("aria-valuemax",enemy.maxhealth);
+    enemyBar.setAttribute("aria-valuemax",enemy.maxhealth);    
+  }
+
+  function setupDocumentPositions(){
+    let arenaBound=document.getElementById("arenaZone").getBoundingClientRect();
+    console.log("arena top ", document.getElementById("arenaZone").getBoundingClientRect())
+    heroRepr.style.top=arenaBound.top+10+"px";
+    heroRepr.style.left=arenaBound.left+10+"px"
+
+    enemyRepr.style.top=arenaBound.bottom-enemyRepr.getBoundingClientRect().height+"px";
+    enemyRepr.style.left=arenaBound.right-enemyRepr.getBoundingClientRect().width+"px";
   }
 
   async function fillBars(){
@@ -92,33 +107,7 @@ class Character {
     }
     console.log("highest health ", highestHealth)
 
-    /*for (let index = 0; index < highestHealth; index++) {
-        //new Promise((resolve) => setTimeout(resolve, 0.2));
-        sleep(5)
-        if (index<=hero.maxhealth){
-            let percentage=(index/hero.maxhealth)*100;
-            heroBar.setAttribute("aria-valuenow",percentage);
-            heroBar.style.width=percentage+"%";
-            console.log("aria-valuenow ",heroBar.getAttribute("aria-valuenow"));
-        }
-        if (index<=enemy.maxhealth){
-            let percentage=(index/enemy.maxhealth)*100;
-            enemyBar.setAttribute("aria-valuenow",percentage);
-            enemyBar.style.width=percentage+"%";
-            requestAnimationFrame(function() {
-                enemyBar.style.opacity = ''; // Reset to default value
-              });
-            console.log("aria-valuenow ",heroBar.getAttribute("aria-valuenow"));
-        }
-        requestAnimationFrame(function() {
-            heroBar.style.opacity = '0.9999';
-            enemyBar.style.opacity = '0.9999'; // Trigger repaint
-    requestAnimationFrame(function() {
-      heroBar.style.opacity = ''; // Reset to default value
-      enemyBar.style.opacity = ''; // Reset to default value
-    });
-        });
-    }*/
+    
 
     //let heroPercentage=(index/hero.maxhealth)*100;
     heroBar.setAttribute("aria-valuenow",hero.maxhealth);
@@ -186,7 +175,61 @@ setup()
 fillBars();
 calculateHealthBar();
 
+window.onload=setupDocumentPositions();
+
 alert("Vida héroe (z): "+hero.maxhealth+"\n Vida enemigo (n): "+enemy.maxhealth)
+
+function move(direction,repr){
+  if (willBeOOB(repr,direction)){
+    return;
+  }
+  if (direction=="u"){
+    repr.style.top=(parseFloat(repr.style.top) || 0) - 10 + 'px';
+  }
+  else if(direction=="r"){
+    repr.style.left=(parseFloat(repr.style.left) || 0) + 10 + 'px';
+  }
+  else if (direction=="d"){
+    repr.style.top=(parseFloat(repr.style.top) || 0) + 10 + 'px';
+  }
+  else if (direction=="l"){
+    repr.style.left=(parseFloat(repr.style.left) || 0) - 10 + 'px';
+  }
+}
+
+
+function willBeOOB(repr,direction){
+  let arena=document.getElementById("arenaZone");
+  switch (direction) {
+    case "u":
+      if (repr.getBoundingClientRect().top<arena.getBoundingClientRect().top){
+        console.log("pos: ",heroRepr.getBoundingClientRect().top,arena.getBoundingClientRect().top)
+        return true
+      }
+      break;
+    case "d":
+      if (repr.getBoundingClientRect().bottom+10>arena.getBoundingClientRect().bottom){
+        console.log("pos: ",heroRepr.getBoundingClientRect().bottom,arena.getBoundingClientRect().bottom)
+        return true
+      }
+      break;
+    case "l":
+      if (repr.getBoundingClientRect().left-9<arena.getBoundingClientRect().left){
+        console.log("pos: ",heroRepr.getBoundingClientRect().left,arena.getBoundingClientRect().left)
+        return true
+      }
+      break;
+      case "r":
+        if (repr.getBoundingClientRect().right+10>arena.getBoundingClientRect().right){
+          console.log("pos: ",heroRepr.getBoundingClientRect().left,arena.getBoundingClientRect().left)
+          return true
+        }
+        break;
+  
+    default:
+      break;
+  }
+}
 
 window.onkeydown=function(key){
     console.log(key)
@@ -196,5 +239,29 @@ window.onkeydown=function(key){
     }
     else if (key.key=='n'){
         attack(enemy,hero)
+    }
+    else if (key.key=='ArrowDown'){
+      move("d",heroRepr)
+    }
+    else if (key.key=='ArrowUp'){
+      move("u",heroRepr)
+    }
+    else if (key.key=='ArrowLeft'){
+      move("l",heroRepr)
+    }
+    else if (key.key=='ArrowRight'){
+      move("r",heroRepr)
+    }
+    else if (key.key=="w"){
+      move("u",enemyRepr)
+    }
+    else if (key.key=="s"){
+      move("d",enemyRepr)
+    }
+    else if (key.key=="a"){
+      move("l",enemyRepr)
+    }
+    else if (key.key=="d"){
+      move("r",enemyRepr)
     }
 }

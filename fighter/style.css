@@ -1,0 +1,14 @@
+.arena{
+    width: 800px; 
+    height:600px;
+    border:3px solid red;
+    margin: 2px;
+    min-height: 600px;
+    min-width: 800px;
+    max-height: 600px;
+    max-width: 800px;
+}
+
+.hero-stats{
+    
+}
