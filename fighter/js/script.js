@@ -24,47 +24,10 @@ class Character {
     status() {
       return `${this.name} - HP ${this.health}/${this.maxhealth}`;
     }
-  }
+}
   
   //Función para combatir
-  async function fight(firstCharacter, secondCharacter) {
-    setup();
-    await fillBars();
-    console.log("Empieza el combate!");
-    console.log(hero.status());
-    console.log(enemy.status());
-    sleep(2000);
-    
-    while (true) {
-        sleep(900);
-  
-      //Primer personaje ataca si esta vivo
-      if (firstCharacter.isAlive()) {
-        firstCharacter.attack(secondCharacter);
-        console.log(hero.status());
-        console.log(enemy.status());
-      } else {
-        console.log(`${firstCharacter.name} died!`);
-        firstCharacter.health=0;
-        calculateHealthBar()
-        break;
-      }
-  
-      //Segundo personaje ataca si esta vivo
-      if (secondCharacter.isAlive()) {
-        secondCharacter.attack(firstCharacter);
-        console.log(hero.status());
-        console.log(enemy.status());
-      } else {
-        secondCharacter.health=0;
-        calculateHealthBar()
-        console.log(`${secondCharacter.name} died!`);
-        break;
-      }
 
-      calculateHealthBar()
-    }
-  }
 
 
 
@@ -74,6 +37,9 @@ class Character {
   const enemy = new Character("Limo", getRndInteger(1,100), 40);
   let heroBar=document.getElementById("heroHealth");
   let enemyBar=document.getElementById("enemyHealth");
+
+  let pressedKeys=[]
+  const speed=5
 
   //repres
   let heroRepr=document.getElementById("heroRepr")
@@ -142,9 +108,9 @@ class Character {
 
   }
 
-  function getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min) ) + min;
-  }
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min) ) + min;
+}
 
   function sleep(millis)
 {
@@ -168,9 +134,61 @@ function attack(attacker,attacked){
 }
 
 
-  //Comenzar combate
-  
-//fight(hero, enemy);
+function move(direction,repr){
+  if (willBeOOB(repr,direction)){
+    return;
+  }
+  if (direction=="u"){
+    repr.style.top=(parseFloat(repr.style.top) || 0) - speed + 'px';
+  }
+  else if(direction=="r"){
+    repr.style.left=(parseFloat(repr.style.left) || 0) + speed + 'px';
+  }
+  else if (direction=="d"){
+    repr.style.top=(parseFloat(repr.style.top) || 0) + speed + 'px';
+  }
+  else if (direction=="l"){
+    repr.style.left=(parseFloat(repr.style.left) || 0) - speed + 'px';
+  }
+}
+
+
+
+function willBeOOB(repr,direction){
+let arena=document.getElementById("arenaZone");
+switch (direction) {
+  case "u":
+    if (repr.getBoundingClientRect().top<arena.getBoundingClientRect().top){
+      console.log("pos: ",heroRepr.getBoundingClientRect().top,arena.getBoundingClientRect().top)
+      return true
+    }
+    break;
+  case "d":
+    if (repr.getBoundingClientRect().bottom+10>arena.getBoundingClientRect().bottom){
+      console.log("pos: ",heroRepr.getBoundingClientRect().bottom,arena.getBoundingClientRect().bottom)
+      return true
+    }
+    break;
+  case "l":
+    if (repr.getBoundingClientRect().left-9<arena.getBoundingClientRect().left){
+      console.log("pos: ",heroRepr.getBoundingClientRect().left,arena.getBoundingClientRect().left)
+      return true
+    }
+    break;
+    case "r":
+      if (repr.getBoundingClientRect().right+10>arena.getBoundingClientRect().right){
+        console.log("pos: ",heroRepr.getBoundingClientRect().left,arena.getBoundingClientRect().left)
+        return true
+      }
+      break;
+
+  default:
+    break;
+}
+}
+
+
+
 setup()
 fillBars();
 calculateHealthBar();
@@ -179,60 +197,13 @@ window.onload=setupDocumentPositions();
 
 alert("Vida héroe (z): "+hero.maxhealth+"\n Vida enemigo (n): "+enemy.maxhealth)
 
-function move(direction,repr){
-  if (willBeOOB(repr,direction)){
-    return;
-  }
-  if (direction=="u"){
-    repr.style.top=(parseFloat(repr.style.top) || 0) - 10 + 'px';
-  }
-  else if(direction=="r"){
-    repr.style.left=(parseFloat(repr.style.left) || 0) + 10 + 'px';
-  }
-  else if (direction=="d"){
-    repr.style.top=(parseFloat(repr.style.top) || 0) + 10 + 'px';
-  }
-  else if (direction=="l"){
-    repr.style.left=(parseFloat(repr.style.left) || 0) - 10 + 'px';
-  }
-}
-
-
-function willBeOOB(repr,direction){
-  let arena=document.getElementById("arenaZone");
-  switch (direction) {
-    case "u":
-      if (repr.getBoundingClientRect().top<arena.getBoundingClientRect().top){
-        console.log("pos: ",heroRepr.getBoundingClientRect().top,arena.getBoundingClientRect().top)
-        return true
-      }
-      break;
-    case "d":
-      if (repr.getBoundingClientRect().bottom+10>arena.getBoundingClientRect().bottom){
-        console.log("pos: ",heroRepr.getBoundingClientRect().bottom,arena.getBoundingClientRect().bottom)
-        return true
-      }
-      break;
-    case "l":
-      if (repr.getBoundingClientRect().left-9<arena.getBoundingClientRect().left){
-        console.log("pos: ",heroRepr.getBoundingClientRect().left,arena.getBoundingClientRect().left)
-        return true
-      }
-      break;
-      case "r":
-        if (repr.getBoundingClientRect().right+10>arena.getBoundingClientRect().right){
-          console.log("pos: ",heroRepr.getBoundingClientRect().left,arena.getBoundingClientRect().left)
-          return true
-        }
-        break;
   
-    default:
-      break;
-  }
-}
 
 window.onkeydown=function(key){
-    console.log(key)
+  if (pressedKeys.indexOf(key.key)!=-1){
+    return
+  }
+    console.log("keydown ",key.key)
     if (key.key=='z'){
         attack(hero,enemy)
         
@@ -241,27 +212,71 @@ window.onkeydown=function(key){
         attack(enemy,hero)
     }
     else if (key.key=='ArrowDown'){
-      move("d",heroRepr)
+      pressedKeys.push(key.key)
     }
     else if (key.key=='ArrowUp'){
-      move("u",heroRepr)
+      pressedKeys.push(key.key)
     }
     else if (key.key=='ArrowLeft'){
-      move("l",heroRepr)
+      pressedKeys.push(key.key)
     }
     else if (key.key=='ArrowRight'){
-      move("r",heroRepr)
+      pressedKeys.push(key.key)
     }
     else if (key.key=="w"){
-      move("u",enemyRepr)
+      pressedKeys.push(key.key)
     }
     else if (key.key=="s"){
-      move("d",enemyRepr)
+      pressedKeys.push(key.key)
     }
     else if (key.key=="a"){
-      move("l",enemyRepr)
+      pressedKeys.push(key.key)
     }
     else if (key.key=="d"){
-      move("r",enemyRepr)
+      pressedKeys.push(key.key)
     }
+    console.log("pressed keys ",pressedKeys)
+}
+
+function executeMovement(){
+  
+    pressedKeys.forEach(key=> {
+      if (key=='ArrowDown'){
+        move("d",heroRepr)
+      }
+      else if (key=='ArrowUp'){
+        move("u",heroRepr)
+      }
+      else if (key=='ArrowLeft'){
+        move("l",heroRepr)
+      }
+      else if (key=='ArrowRight'){
+        move("r",heroRepr)
+      }
+      else if (key=="w"){
+        move("u",enemyRepr)
+      }
+      else if (key=="s"){
+        move("d",enemyRepr)
+      }
+      else if (key=="a"){
+        move("l",enemyRepr)
+      }
+      else if (key=="d"){
+        move("r",enemyRepr)
+      }
+      
+    });
+    
+  
+}
+
+window.setInterval(executeMovement,20)
+
+window.onkeyup=function(key){
+  let index=pressedKeys.indexOf(key.key)
+  if (index!=-1){
+    console.log("keyup ",key.key)
+    pressedKeys.splice(index,1)
+  }
 }
