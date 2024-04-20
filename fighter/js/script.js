@@ -1,5 +1,7 @@
 //Ejercicio de practica Javascript
 
+import { Game } from "./lecs/game.js";
+
 //Objeto base para los personajes
 class Character {
     constructor(name, health, damage) {
@@ -193,17 +195,19 @@ setup()
 fillBars();
 calculateHealthBar();
 
-window.onload=setupDocumentPositions();
+//window.onload=setupDocumentPositions();
 
 alert("Vida héroe (z): "+hero.maxhealth+"\n Vida enemigo (n): "+enemy.maxhealth)
+let game=new Game();
+game.start();
 
   
 
-window.onkeydown=function(key){
+/*window.onkeydown=function(key){
   if (pressedKeys.indexOf(key.key)!=-1){
     return
   }
-    console.log("keydown ",key.key)
+    console.log("keydown ",key)
     if (key.key=='z'){
         attack(hero,enemy)
         
@@ -279,4 +283,5 @@ window.onkeyup=function(key){
     console.log("keyup ",key.key)
     pressedKeys.splice(index,1)
   }
-}
+}*/
+
