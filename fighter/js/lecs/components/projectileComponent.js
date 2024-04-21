@@ -50,6 +50,7 @@ export class ProjectileComponent extends BaseComponent{
     attack(){
         if (this.#willAttack){
             this.#willAttack=false
+            this.recoverAttack()
             return getRndInteger(this.#damageMin,this.#damageMax)
         }
         return 0;
