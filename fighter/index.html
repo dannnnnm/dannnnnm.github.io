@@ -14,14 +14,16 @@
   </head>
 
   <body>
-    <h2>Fight!</h2>
+    <h1 class="text-center"><strong>Fight!</strong></h1>
 
     <div class="container-fluid">
         <div class="row char-stats text-center">
             <div class="col-sm-6">
                 
                 <div class="row">
-                    <p id="p1-health">0/x</p>
+                    <h2>Player 1</h2>
+                    <h3 id="p1-health">0/x</h3>
+                    <p><strong>Arrowkeys</strong> to move, <strong>SPACEBAR</strong> to attack</p>
                 </div>
                 <div class="progress">
                     <div class="progress-bar" role="progressbar" id="heroHealth" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="transition-duration:300ms;"></div>
@@ -30,7 +32,9 @@
                 <div class="col-sm-6 h-50">
                     
                     <div class="row">
-                        <p id="p2-health">0/x</p>
+                        <h2>Player 2</h2>
+                        <h3 id="p2-health">0/x</h3>
+                        <p><strong>WASD</strong> to move, <strong>H</strong> to attack</p>
                     </div>
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" id="enemyHealth" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="transition-duration:300ms;"></div>></div>
@@ -71,10 +75,17 @@
         
     </div>
 
-    <div class="arena" id="arenaZone">
-        <!--<img src="images/gat.png" alt="" height="80px" id="heroRepr" style="position: absolute; top: 1000px; left: 200px;">
-        <img src="images/chopper.png" alt="" height="80px" id="enemyRepr" style="position: absolute; top: 1000px; left: 200px;">-->
+    
+    <div class="arena-container">
+        
+        <div class="arena" id="arenaZone">
+        </div>    
     </div>
+
+    <!--<div class="arena" id="arenaZone">
+        <img src="images/gat.png" alt="" height="80px" id="heroRepr" style="position: absolute; top: 1000px; left: 200px;">
+        <img src="images/chopper.png" alt="" height="80px" id="enemyRepr" style="position: absolute; top: 1000px; left: 200px;">
+    </div>-->
 
 
     <script src="./js/script.js" type="module"></script>
