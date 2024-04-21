@@ -103,6 +103,7 @@ toggleMusic.onclick=function(){
   else{
     audio.play()
     document.getElementById("statusParagraph").textContent=""
+    
   }
   toggleMusic.blur()
 }
@@ -113,11 +114,8 @@ audio.play().then(
     audio.muted=false
   },
   (error)=>{
-    let parent=document.getElementById("musicStatus");
-    let paragraph= document.createElement("p")
-    paragraph.id="statusParagraph"
+    let paragraph=document.getElementById("statusParagraph")
     paragraph.textContent="(Could not autoplay music)"
-    parent.appendChild(paragraph)
     
     
     
