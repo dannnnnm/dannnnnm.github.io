@@ -1,9 +1,20 @@
-import { POSITION_COMPONENT, RENDER_COMPONENT } from "../components/constants.js";
+import { HEALTH_COMPONENT, POSITION_COMPONENT, RENDER_COMPONENT } from "../components/constants.js";
 import { BaseSystem } from "./baseSystem.js";
 
+
+const DEATH_FILTER="invert(100%)";
 export class RenderSystem extends BaseSystem{
-    constructor(componentManager,config={},logger){
+
+    #player1Id
+    #player2Id
+    #player1HealthComponent
+    #player2HealthComponent
+    constructor(player1Id,player2Id,componentManager,config={},logger){
         super(componentManager,logger)
+        this.#player1Id=player1Id
+        this.#player2Id=player2Id
+        this.#player1HealthComponent=componentManager.getEntityComponentByType(player1Id,HEALTH_COMPONENT)
+        this.#player2HealthComponent=componentManager.getEntityComponentByType(player2Id,HEALTH_COMPONENT)
 
     }
 
@@ -13,7 +24,14 @@ export class RenderSystem extends BaseSystem{
             const positionComponent = entityComponents[POSITION_COMPONENT];
             renderComponent.htmlElement().style.top=positionComponent.y+"px"
             renderComponent.htmlElement().style.left=positionComponent.x+"px"
+            if (!this.#player1HealthComponent.alive && renderComponent.entityId==this.#player1Id){
+                renderComponent.htmlElement().style.filter=DEATH_FILTER
+            }
+            if (!this.#player2HealthComponent.alive && renderComponent.entityId==this.#player2Id){
+                renderComponent.htmlElement().style.filter=DEATH_FILTER
+            }
         });
+
     }
     
 }

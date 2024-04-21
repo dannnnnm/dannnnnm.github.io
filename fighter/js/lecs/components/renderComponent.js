@@ -18,7 +18,15 @@ export class RenderComponent extends BaseComponent{
         this.#htmlComponent.height=this.#htmlComponent.height*scale
         this.#htmlComponent.width=this.#htmlComponent.width*scale
 
-        arenaElement.appendChild(this.#htmlComponent)
+        let preexistingElement=document.getElementById(entityId)
+        if (preexistingElement!=null){
+            this.#htmlComponent=preexistingElement
+            this.#htmlComponent.style.filter=null
+        }
+        else{
+            arenaElement.appendChild(this.#htmlComponent)
+        }
+        
 
         this.#htmlComponent.style.position="absolute";
         this.#htmlComponent.style.top=initialPosition.y+"px"
@@ -27,6 +35,10 @@ export class RenderComponent extends BaseComponent{
 
     htmlElement(){
         return this.#htmlComponent
+    }
+
+    invisible(){
+        this.#htmlComponent.style.visibility="hidden";
     }
 
 

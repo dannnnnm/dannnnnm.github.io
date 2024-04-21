@@ -18,29 +18,37 @@
 
     <div class="container-fluid">
         <div class="row char-stats text-center">
-            <div class="col-sm-6">
-                
+            <div class="col-sm-5">
+    
                 <div class="row">
                     <h2>Player 1</h2>
                     <h3 id="p1-health">0/x</h3>
-                    <p><strong>Arrowkeys</strong> to move, <strong>SPACEBAR</strong> to attack</p>
+                    <p><strong>Arrowkeys</strong> to move, <strong>SPACEBAR</strong> to melee attack, <strong>M</strong> to
+                        throw projectile</p>
                 </div>
                 <div class="progress">
-                    <div class="progress-bar" role="progressbar" id="heroHealth" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="transition-duration:300ms;"></div>
+                    <div class="progress-bar" role="progressbar" id="heroHealth" aria-valuenow="0" aria-valuemin="0"
+                        aria-valuemax="100" style="transition-duration:300ms;"></div>
                 </div>
             </div>
-                <div class="col-sm-6 h-50">
-                    
-                    <div class="row">
-                        <h2>Player 2</h2>
-                        <h3 id="p2-health">0/x</h3>
-                        <p><strong>WASD</strong> to move, <strong>H</strong> to attack</p>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" id="enemyHealth" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="transition-duration:300ms;"></div>></div>
-                    </div>
+            <div class="col-sm-2">
+                <button class="btn btn-danger" type="button" id="resetButton">RESET</button>
+            </div>
+            <div class="col-sm-5 h-50">
+    
+                <div class="row">
+                    <h2>Player 2</h2>
+                    <h3 id="p2-health">0/x</h3>
+                    <p><strong>WASD</strong> to move, <strong>G</strong> to melee attack, <strong>H</strong> to throw
+                        projectile</p>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" id="enemyHealth" aria-valuenow="0" aria-valuemin="0"
+                        aria-valuemax="100" style="transition-duration:300ms;"></div>>
+                </div>
             </div>
         </div>
+    </div>
         <!--<div class="row hero-stats align-items-center h-25">
             <div class="col-sm-2">  
                 <img src="images/gat.png" class="img-fluid" alt="">

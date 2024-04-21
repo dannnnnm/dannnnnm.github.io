@@ -1,14 +1,22 @@
 .arena{
     width: 800px; 
-    height:600px;
+    height:700px;
     border:3px solid red;
     margin: 2px;
-    min-height: 600px;
+    min-height: 700px;
     min-width: 800px;
-    max-height: 600px;
+    max-height: 700px;
     max-width: 800px;
+    
 }
 
-.hero-stats{
-    
+.arena-container{
+    display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.instructions{
+    padding-right: 20vw;
+    width: 50vw;
 }

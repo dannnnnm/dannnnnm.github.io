@@ -6,7 +6,8 @@ export class CollisionComponent extends BaseComponent{
     y
     width
     height
-    constructor(entityId,positionVector,width,height){
+    onCollision
+    constructor(entityId,positionVector,width,height,onCollision){
         super(entityId)
         this.x=positionVector.x
         this.y=positionVector.y
