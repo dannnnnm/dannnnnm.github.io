@@ -93,7 +93,40 @@ game.start();
 let resetButton=document.getElementById("resetButton")
 resetButton.onclick=function (btn){
                                   clearTimeout(game.gameUpdateId)
+                                  game.stop()
                                   game=new Game();
                                   game.start();
                                   resetButton.blur()
-                              }
+                              };
+
+var audio=new Audio("audio/freedoom.m4a")
+audio.volume=0.33
+audio.loop=true
+
+let toggleMusic=document.getElementById("stopMusic")
+toggleMusic.onclick=function(){
+  console.log("called")
+  if (!audio.paused){
+    audio.pause()
+  }
+  else{
+    audio.play()
+  }
+  toggleMusic.blur()
+}
+
+
+audio.play().then(
+  (result)=>{
+    audio.muted=false
+  },
+  (error)=>{
+    let parent=document.getElementById("musicStatus");
+    let paragraph= document.createElement("p")
+    paragraph.textContent="(Could not autoplay music)"
+    parent.appendChild(paragraph)
+    
+    
+    
+  }
+)

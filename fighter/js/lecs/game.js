@@ -1,5 +1,5 @@
 import { CollisionComponent } from "./components/collisionComponent.js";
-import { arenaElement } from "./components/constants.js";
+import { RENDER_COMPONENT, arenaElement } from "./components/constants.js";
 import { HealthComponent } from "./components/healthComponent.js";
 import { MeleeComponent } from "./components/meleeComponent.js";
 import { PositionComponent } from "./components/positionComponent.js";
@@ -89,8 +89,8 @@ export class Game{
     const guiSystem= new GuiSystem(this.#player1Id,this.#player2Id,this.#componentManager,{},)
 
     this.#systemManager.addSystem(inputSystem);
+    this.#systemManager.addSystem(attackSystem); //ataque antes de colision para que pueda tirar proyectiles mientras chocan
     this.#systemManager.addSystem(collisionSystem);
-    this.#systemManager.addSystem(attackSystem);
     this.#systemManager.addSystem(movementSystem);
     this.#systemManager.addSystem(renderSystem);
 
@@ -171,5 +171,11 @@ export class Game{
   _update() {
     this.#systemManager.update(this.#player1Id,this.#player2Id);
     this.gameUpdateId = setTimeout(this._update.bind(this), this.#speed);
+  }
+
+  stop(){
+    this.#componentManager.getComponentsByType(RENDER_COMPONENT).forEach(renderComp=>{
+      renderComp.invisible()
+    })
   }
 }
