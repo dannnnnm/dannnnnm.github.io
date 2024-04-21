@@ -1,4 +1,5 @@
 import { COLLISION_COMPONENT, HEALTH_COMPONENT, OWNER_COMPONENT, POSITION_COMPONENT, RENDER_COMPONENT, arenaElement } from "../components/constants.js";
+import { getRndInteger } from "../utils/utils.js";
 import { BaseSystem } from "./baseSystem.js";
 
 
@@ -31,6 +32,8 @@ export class CollisionSystem extends BaseSystem{
         let futureY=positionComponent.y+positionComponent.velocity.y;
         let result=true;
 
+        this._OOBFailsafe(positionComponent,collisionComponent);
+
         if (futureX<arenaElement.getBoundingClientRect().left || futureX+collisionComponent.width>arenaElement.getBoundingClientRect().right){
             positionComponent.velocity.x=0;
             result=false
@@ -39,8 +42,21 @@ export class CollisionSystem extends BaseSystem{
             positionComponent.velocity.y=0;
             result=false
         }
+
+        
         return result
         //TODO: failsafe para redimensión de página
+    }
+
+    _OOBFailsafe(positionComponent,collisionComponent){
+        let arenaBounds=arenaElement.getBoundingClientRect()
+        
+        if (positionComponent.x+collisionComponent.width<arenaBounds.left || positionComponent.x>arenaBounds.right){
+            positionComponent.x=getRndInteger(arenaBounds.left+10,arenaBounds.right-10)    
+        }
+        if (positionComponent.y+positionComponent.height<arenaBounds.top || positionComponent.y>arenaBounds.bottom){
+            positionComponent.y=getRndInteger(arenaBounds.top+10,arenaBounds.bottom-10)
+        }
     }
 
     _checkPlayersCollision(){
@@ -112,7 +128,7 @@ export class CollisionSystem extends BaseSystem{
     _checkProjectileOverlaps(ownerComponent,projectilePositionComponent,projectileCollisionComponent){
         this.componentManager.getComponentsByTypes(COLLISION_COMPONENT,POSITION_COMPONENT,HEALTH_COMPONENT).forEach((components)=>{
             if (components.length<1) return; //continue
-            console.log("components",components)
+            //console.log("components",components)
             let otherCollisionComponent=components[COLLISION_COMPONENT]
             let otherPositionComponent=components[POSITION_COMPONENT]
             let otherHealthComponent=components[HEALTH_COMPONENT]
