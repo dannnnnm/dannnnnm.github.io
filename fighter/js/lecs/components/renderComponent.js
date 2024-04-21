@@ -31,6 +31,7 @@ export class RenderComponent extends BaseComponent{
         this.#htmlComponent.style.position="absolute";
         this.#htmlComponent.style.top=initialPosition.y+"px"
         this.#htmlComponent.style.left=initialPosition.x+"px"
+        this.#htmlComponent.style.visibility="visible";
     }
 
     htmlElement(){

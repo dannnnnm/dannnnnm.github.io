@@ -108,9 +108,7 @@ export class Game{
     this.#componentManager.addComponent(positionComponent1);
 
     const positionComponent2 = new PositionComponent(this.#player2Id, 100, 75,true);
-    positionComponent2.x=arenaBounds.right-renderComponent2.htmlElement().width-10;
-    positionComponent2.y=arenaBounds.bottom-renderComponent2.htmlElement().height-10;
-    this.#componentManager.addComponent(positionComponent2);
+    
 
 
 
@@ -121,6 +119,12 @@ export class Game{
     this.#componentManager.addComponent(renderComponent2);
 
 
+    //depende del rendercomponent
+    positionComponent2.x=arenaBounds.right-renderComponent2.htmlElement().width-10;
+    positionComponent2.y=arenaBounds.bottom-renderComponent2.htmlElement().height-10;
+    this.#componentManager.addComponent(positionComponent2);
+
+
 
     const healthComponent1= new HealthComponent(this.#player1Id);
     this.#componentManager.addComponent(healthComponent1)
@@ -129,7 +133,7 @@ export class Game{
     this.#componentManager.addComponent(healthComponent2)
 
 
-    
+
     //melee
 
     const meleeComponent1= new MeleeComponent(this.#player1Id);

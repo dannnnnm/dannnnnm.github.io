@@ -71,7 +71,7 @@ export class AttackSystem extends BaseSystem{
     }
 
     _checkPlayerProjectile(playerProjectileComponent,playerPosition,playerCollision){
-        console.log("projcom ",playerPosition.entityId, "status ", playerProjectileComponent.cooledDown)
+    
         if (playerProjectileComponent.prepared()){
             
             let projectileId=this.#entityManager.addEntity("projectile")
