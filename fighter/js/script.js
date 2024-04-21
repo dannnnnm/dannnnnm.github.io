@@ -3,13 +3,6 @@
 import { Game } from "./lecs/game.js";
 
 
-  
-  //Creación de personajes
-  let heroBar=document.getElementById("heroHealth");
-  let enemyBar=document.getElementById("enemyHealth");
-
-  let pressedKeys=[]
-  const speed=5
 
   
     
@@ -86,8 +79,6 @@ function sleep(millis){
 
 
 
-
-
 let game=new Game();
 game.start();
 let resetButton=document.getElementById("resetButton")
@@ -111,6 +102,7 @@ toggleMusic.onclick=function(){
   }
   else{
     audio.play()
+    document.getElementById("statusParagraph").textContent=""
   }
   toggleMusic.blur()
 }
@@ -123,6 +115,7 @@ audio.play().then(
   (error)=>{
     let parent=document.getElementById("musicStatus");
     let paragraph= document.createElement("p")
+    paragraph.id="statusParagraph"
     paragraph.textContent="(Could not autoplay music)"
     parent.appendChild(paragraph)
     

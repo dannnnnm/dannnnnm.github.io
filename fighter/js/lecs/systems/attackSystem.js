@@ -103,7 +103,7 @@ export class AttackSystem extends BaseSystem{
     }
 
     _attackOther(selfAttack,selfHealth,otherHealth){
-        if (selfAttack.prepared() && selfHealth.alive){
+        if (selfAttack.prepared()){
             otherHealth.hurt(selfAttack.attack())
         }
         
