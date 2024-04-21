@@ -50,5 +50,6 @@ export class MeleeComponent extends BaseComponent{
 
     miss(){
         this.#willAttack=false
+        this.recoverAttack()
     }
 }
