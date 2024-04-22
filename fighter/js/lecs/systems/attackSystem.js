@@ -8,6 +8,7 @@ import { BaseSystem } from "./baseSystem.js";
 import { overlaps } from "./collisionSystem.js";
 
 export class AttackSystem extends BaseSystem{
+
     #player1Id
     #player2Id
 
@@ -40,6 +41,7 @@ export class AttackSystem extends BaseSystem{
         this.#player1Id=player1Id
         this.#player2Id=player2Id
         this.#entityManager=entitiyManager
+
     }
 
     update(){
@@ -56,8 +58,13 @@ export class AttackSystem extends BaseSystem{
         }
         else {
             //ataque desperdiciado
-            this.#player1Attack.miss();
-            this.#player2Attack.miss();
+            if (this.#player1Attack.prepared()){
+                this.#player1Attack.miss();
+            }
+            if (this.#player2Attack.prepared()){
+                this.#player2Attack.miss();
+            }
+            
 
         }
     }
@@ -79,7 +86,7 @@ export class AttackSystem extends BaseSystem{
             
             let direction=new Vector2D(playerPosition.velocity.x,playerPosition.velocity.y)
             if(direction.x==0 && direction.x==direction.y){
-                direction.x=MOVEMENT_SPEED;
+                direction.x=1;
             }
 
 
@@ -95,7 +102,8 @@ export class AttackSystem extends BaseSystem{
             let projectileSpriteDimensions=projectileRenderComponent.htmlElement();
             let collisionComponent=new CollisionComponent(projectileId,new Vector2D(),projectileSpriteDimensions.width,projectileSpriteDimensions.height)
             this.componentManager.addComponent(collisionComponent);
-
+            projectilePositionComponent.x-=collisionComponent.width/2
+            projectilePositionComponent.y-=collisionComponent.height/2
             
             let projectileOwnerComponent=new OwnerComponent(projectileId,playerCollision.entityId,damage);
             this.componentManager.addComponent(projectileOwnerComponent)
@@ -104,15 +112,20 @@ export class AttackSystem extends BaseSystem{
 
     _attackOther(selfAttack,selfHealth,otherHealth){
         if (selfAttack.prepared()){
+            let attackSound=new Audio("audio/bonk.m4a")
             otherHealth.hurt(selfAttack.attack())
+            attackSound.play()
         }
         
     }
 
     _playersOverlap(){
-        return overlaps(this.#player1Position.asVector(),this.#player2Position.asVector(),
-                            this.#player1Collisions.width, this.#player2Collisions.width,
-                            this.#player1Collisions.height, this.#player2Collisions.height)
+        let range=30
+        let player1Position=new Vector2D(this.#player1Position.x,this.#player1Position.y)
+        let player2Position=new Vector2D(this.#player2Position.x,this.#player2Position.y)
+        return overlaps(player1Position,player2Position,
+                            this.#player1Collisions.width+range, this.#player2Collisions.width+range,
+                            this.#player1Collisions.height+range, this.#player2Collisions.height+range)
     }
 
 }
