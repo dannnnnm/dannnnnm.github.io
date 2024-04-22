@@ -23,7 +23,7 @@ export class MeleeComponent extends BaseComponent{
         let cancellationId=setTimeout(function(){
             this.cooledDown=true
             clearTimeout(cancellationId)
-        }.bind(this),250)
+        }.bind(this),350)
     }
 
 
@@ -49,7 +49,10 @@ export class MeleeComponent extends BaseComponent{
 
 
     miss(){
+        
+        let missSound=new Audio("audio/whoosh.m4a")
         this.#willAttack=false
         this.recoverAttack()
+        missSound.play()
     }
 }

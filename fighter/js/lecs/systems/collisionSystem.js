@@ -1,4 +1,5 @@
 import { COLLISION_COMPONENT, HEALTH_COMPONENT, OWNER_COMPONENT, POSITION_COMPONENT, RENDER_COMPONENT, arenaElement } from "../components/constants.js";
+import { MOVEMENT_SPEED } from "../game.js";
 import { getRndInteger } from "../utils/utils.js";
 import { BaseSystem } from "./baseSystem.js";
 
@@ -28,8 +29,8 @@ export class CollisionSystem extends BaseSystem{
     }
 
     _playerInbounds(positionComponent,collisionComponent){
-        let futureX=positionComponent.x+positionComponent.velocity.x;
-        let futureY=positionComponent.y+positionComponent.velocity.y;
+        let futureX=positionComponent.x+(positionComponent.velocity.x*MOVEMENT_SPEED);
+        let futureY=positionComponent.y+(positionComponent.velocity.y*MOVEMENT_SPEED);
         let result=true;
 
         this._OOBFailsafe(positionComponent,collisionComponent);
@@ -45,14 +46,19 @@ export class CollisionSystem extends BaseSystem{
 
         
         return result
-        //TODO: failsafe para redimensión de página
+        
     }
 
     _OOBFailsafe(positionComponent,collisionComponent){
         let arenaBounds=arenaElement.getBoundingClientRect()
-        
+        if (positionComponent.x<arenaBounds.left || positionComponent.x+collisionComponent.width>arenaBounds.right){
+            positionComponent.x=getRndInteger(arenaBounds.left+10,arenaBounds.right-10)    
+        }
         if (positionComponent.x+collisionComponent.width<arenaBounds.left || positionComponent.x>arenaBounds.right){
             positionComponent.x=getRndInteger(arenaBounds.left+10,arenaBounds.right-10)    
+        }
+        if (positionComponent.y<arenaBounds.top || positionComponent.y+collisionComponent.height>arenaBounds.bottom){
+            positionComponent.y=getRndInteger(arenaBounds.top+10,arenaBounds.bottom-10)
         }
         if (positionComponent.y+positionComponent.height<arenaBounds.top || positionComponent.y>arenaBounds.bottom){
             positionComponent.y=getRndInteger(arenaBounds.top+10,arenaBounds.bottom-10)
@@ -76,9 +82,9 @@ export class CollisionSystem extends BaseSystem{
             if (overlapX > overlapY) {
                 // Move along Y axis
                 let newPos1=this.#player1Position.asVector();
-                newPos1.x+=this.#player1Position.velocity.x;
+                newPos1.x+=this.#player1Position.velocity.x*MOVEMENT_SPEED;
                 let newPos2=this.#player2Position.asVector();
-                newPos2.x+=this.#player2Position.velocity.x;
+                newPos2.x+=this.#player2Position.velocity.x*MOVEMENT_SPEED;
                 let futurePosOverlap=overlaps(newPos1,newPos2,player1Width,player2Width,player1Height,player2Height);
                 if (this.#player1Position.velocity.x==this.#player2Position.velocity.x){
 
@@ -90,9 +96,9 @@ export class CollisionSystem extends BaseSystem{
             } else {
                 // Move along X axis
                 let newPos1=this.#player1Position.asVector();
-                newPos1.y+=this.#player1Position.velocity.y;
+                newPos1.y+=this.#player1Position.velocity.y*MOVEMENT_SPEED;
                 let newPos2=this.#player2Position.asVector();
-                newPos2.y+=this.#player2Position.velocity.y;
+                newPos2.y+=this.#player2Position.velocity.y*MOVEMENT_SPEED;
                 // evitar que no puedan retroceder.
                 let futurePosOverlap=overlaps(newPos1,newPos2,player1Width,player2Width,player1Height,player2Height);
                 if (this.#player1Position.velocity.y==this.#player2Position.velocity.y){

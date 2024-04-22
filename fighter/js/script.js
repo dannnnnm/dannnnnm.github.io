@@ -77,19 +77,6 @@ function sleep(millis){
 }
 
 
-
-
-let game=new Game();
-game.start();
-let resetButton=document.getElementById("resetButton")
-resetButton.onclick=function (btn){
-                                  clearTimeout(game.gameUpdateId)
-                                  game.stop()
-                                  game=new Game();
-                                  game.start();
-                                  resetButton.blur()
-                              };
-
 var audio=new Audio("audio/freedoom.m4a")
 audio.volume=0.33
 audio.loop=true
@@ -121,3 +108,18 @@ audio.play().then(
     
   }
 )
+
+
+
+let game=new Game();
+game.start();
+let resetButton=document.getElementById("resetButton")
+resetButton.onclick=function (btn){
+                                  clearTimeout(game.gameUpdateId)
+                                  game.stop()
+                                  game=new Game();
+                                  game.start();
+                                  resetButton.blur()
+                              };
+
+

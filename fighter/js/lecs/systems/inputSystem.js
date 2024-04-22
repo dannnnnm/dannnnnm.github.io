@@ -36,16 +36,16 @@ export class InputSystem extends BaseSystem{
         let player1Melee=this.componentManager.getEntityComponentByType(this.#player1Id,MELEE_COMPONENT)
         let player1Projectile=this.componentManager.getEntityComponentByType(this.#player1Id,PROJECTILE_COMPONENT)
         if (this.#pressedKeys.has("ArrowRight")){
-            player1Pos.velocity.x+=this.#movementSpeed
+            player1Pos.velocity.x+=1
         }
         if (this.#pressedKeys.has("ArrowLeft")){
-            player1Pos.velocity.x-=this.#movementSpeed
+            player1Pos.velocity.x-=1
         }
         if (this.#pressedKeys.has("ArrowUp")){
-            player1Pos.velocity.y-=this.#movementSpeed
+            player1Pos.velocity.y-=1
         }
         if (this.#pressedKeys.has("ArrowDown")){
-            player1Pos.velocity.y+=this.#movementSpeed
+            player1Pos.velocity.y+=1
         }
         if (this.#pressedKeys.has("Space")){
             player1Melee.prepareAttack()
@@ -63,16 +63,16 @@ export class InputSystem extends BaseSystem{
         let player2Melee=this.componentManager.getEntityComponentByType(this.#player2Id,MELEE_COMPONENT)
         let player2Projectile=this.componentManager.getEntityComponentByType(this.#player2Id,PROJECTILE_COMPONENT)
         if (this.#pressedKeys.has("KeyD")){
-            player2Pos.velocity.x+=this.#movementSpeed
+            player2Pos.velocity.x+=1
         }
         if (this.#pressedKeys.has("KeyA")){
-            player2Pos.velocity.x-=this.#movementSpeed
+            player2Pos.velocity.x-=1
         }
         if (this.#pressedKeys.has("KeyW")){
-            player2Pos.velocity.y-=this.#movementSpeed
+            player2Pos.velocity.y-=1
         }
         if (this.#pressedKeys.has("KeyS")){
-            player2Pos.velocity.y+=this.#movementSpeed
+            player2Pos.velocity.y+=1
         }
         if (this.#pressedKeys.has("KeyG")){
             player2Melee.prepareAttack()
