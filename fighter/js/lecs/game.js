@@ -1,6 +1,7 @@
 import { CollisionComponent } from "./components/collisionComponent.js";
 import { RENDER_COMPONENT, arenaElement } from "./components/constants.js";
 import { HealthComponent } from "./components/healthComponent.js";
+import { ManaComponent } from "./components/manaComponent.js";
 import { MeleeComponent } from "./components/meleeComponent.js";
 import { PositionComponent } from "./components/positionComponent.js";
 import { ProjectileComponent } from "./components/projectileComponent.js";
@@ -12,6 +13,7 @@ import { AttackSystem } from "./systems/attackSystem.js";
 import { CollisionSystem } from "./systems/collisionSystem.js";
 import { GuiSystem } from "./systems/guiSystem.js";
 import { InputSystem } from "./systems/inputSystem.js";
+import { ManaSystem } from "./systems/manaSystem.js";
 import { MovementSystem } from "./systems/movementSystem.js";
 import { RenderSystem } from "./systems/renderSystem.js";
 
@@ -52,8 +54,10 @@ export class Game{
     this.#player1Id = this.#entityManager.addEntity("player1");
     this.#player2Id = this.#entityManager.addEntity("player2");
 
-    let fairGame=searchParams.has("fairGame")
-    this._initComponents(fairGame)
+    
+    let fairGamePresence=searchParams.get("fairGame")
+    let fairGameValue=fairGamePresence!=''?parseInt(fairGamePresence):undefined
+    this._initComponents(fairGameValue)
 
     let meleeOnly=searchParams.has("meleeOnly")
     // Systems
@@ -67,8 +71,10 @@ export class Game{
 
     );
 
+    let isManaSystem=searchParams.has("manaSystem");
+    let manaSystem= new ManaSystem(this.#player1Id, this.#player2Id, this.#componentManager)
+    this.#systemManager.addSystem(manaSystem)
     
-
     
     let risingTensionPresence=searchParams.get("risingTension")
     let risingTensionValue=risingTensionPresence!=''?parseInt(risingTensionPresence):1
@@ -142,17 +148,20 @@ export class Game{
     this.#componentManager.addComponent(positionComponent2);
 
 
-    let maxHealth=fairGame?100:undefined
+    let maxHealth=fairGame?fairGame:undefined
     const healthComponent1= new HealthComponent(this.#player1Id,maxHealth);
     const healthComponent2= new HealthComponent(this.#player2Id,maxHealth);
     
     this.#componentManager.addComponent(healthComponent1)
     this.#componentManager.addComponent(healthComponent2)
 
-
+    //mana
+    const ManaComponent1 = new ManaComponent(this.#player1Id)
+    const ManaComponent2 = new ManaComponent(this.#player2Id)
+    this.#componentManager.addComponent(ManaComponent1)
+    this.#componentManager.addComponent(ManaComponent2)
 
     //melee
-
     const meleeComponent1= new MeleeComponent(this.#player1Id);
     this.#componentManager.addComponent(meleeComponent1)
 
