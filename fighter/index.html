@@ -14,18 +14,26 @@
   </head>
 
   <body>
+    <!-- hack para evitar problemas de carga tardía xd-->
+    <audio src="audio/freedoom.m4a"></audio>
+    <audio src="audio/princess.m4a"></audio>
+    <audio src="audio/whoosh.m4a"></audio>
+    <audio src="audio/bonk.m4a"></audio>
+    <audio src="audio/bounce.wav"></audio>
+    <audio src="audio/projhit.wav"></audio>
+    <audio src="audio/projthrow.wav"></audio>
     <img src="images/chopper.png" alt="" hidden="true">
     <img src="images/gat.png" alt="" hidden="true">
     <img src="images/kinball.png" alt="" hidden="true">
-    <h1 class="text-center"><strong>Fight!</strong></h1>
 
     <div class="container-fluid">
         <div class="row char-stats text-center">
+            <h1 class="text-center"><strong>Fight!</strong></h1>
             <div class="col-sm-5">
     
                 <div class="row">
-                    <h2>Player 1</h2>
-                    <h3 id="p1-health">0/x</h3>
+                    <h3><strong>Player 1</strong></h3>
+                    <h4 ><span id="p1-health">0/x</span> || <span id="p1-combo">Combo: 0</span></h4>
                     <p><strong>Arrowkeys</strong> to move, <strong>SPACEBAR</strong> to melee attack, <strong>M</strong> to
                         throw projectile</p>
                 </div>
@@ -43,7 +51,7 @@
                         <p id="statusParagraph"></p>
                     </div>
                 </div>
-                <div class="row pt-2">
+                <div class="row">
                     <div class="col-sm-6">
                         <button class="btn btn-primary" type="button" id="defaultMusic">Default music</button>
                     </div>
@@ -55,8 +63,8 @@
             <div class="col-sm-5 h-50">
     
                 <div class="row">
-                    <h2>Player 2</h2>
-                    <h3 id="p2-health">0/x</h3>
+                    <h4><strong>Player 2</strong></h4>
+                    <h4 ><span id="p2-health">0/x</span> || <span id="p2-combo">Combo: 0</span></h4>
                     <p><strong>WASD</strong> to move, <strong>G</strong> to melee attack, <strong>H</strong> to throw
                         projectile</p>
                 </div>

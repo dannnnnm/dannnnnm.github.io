@@ -28,6 +28,9 @@ export class Game{
   #speed;
 
   constructor(config = {}) {
+
+    let searchParams=new URLSearchParams(window.location.search)
+
     config = {
       /*canvasWidth: RESOLUTION_WIDTH,
       canvasHeight: RESOLUTION_HEIGHT,
@@ -49,33 +52,47 @@ export class Game{
     this.#player1Id = this.#entityManager.addEntity("player1");
     this.#player2Id = this.#entityManager.addEntity("player2");
 
-    this._initComponents()
+    let fairGame=searchParams.has("fairGame")
+    this._initComponents(fairGame)
 
-
+    let meleeOnly=searchParams.has("meleeOnly")
     // Systems
     const inputSystem = new InputSystem(
       this.#player1Id,this.#player2Id,
       this.#componentManager,
       {
         movementSpeed: MOVEMENT_SPEED,
+        meleeOnly: meleeOnly
       },
 
     );
 
+    
+
+    
+    let risingTensionPresence=searchParams.get("risingTension")
+    let risingTensionValue=risingTensionPresence!=''?parseInt(risingTensionPresence):1
     const collisionSystem= new CollisionSystem(
       this.#player1Id,
       this.#player2Id,
       this.#componentManager,
-      {},
+      {
+        bouncingBetty: searchParams.has("bouncingBetty"),
+        staticBetty: searchParams.has("staticBetty"),
+        risingTension: risingTensionValue!=NaN?risingTensionValue:null ,
+        repelPhys: searchParams.has("repelPhys")
+      },
     );
 
 
     const attackSystem= new AttackSystem(this.#player1Id,this.#player2Id,this.#componentManager,this.#entityManager,{},)
 
-
+    let doomMove=searchParams.has("doomMove")
     const movementSystem = new MovementSystem(
       this.#componentManager,
-      {}, // No config
+      {
+        doomMove: doomMove
+      }, // No config
 
     );
     const renderSystem = new RenderSystem(
@@ -99,15 +116,15 @@ export class Game{
     //this.#systemManager.info();
   }
 
-  _initComponents(){
+  _initComponents(fairGame){
     let arenaBounds=arenaElement.getBoundingClientRect();
 
 
 
-    const positionComponent1 = new PositionComponent(this.#player1Id, arenaBounds.left+10, arenaBounds.top+10,true);
+    const positionComponent1 = new PositionComponent(this.#player1Id, arenaBounds.left+10, arenaBounds.top+10,MOVEMENT_SPEED,true);
     this.#componentManager.addComponent(positionComponent1);
 
-    const positionComponent2 = new PositionComponent(this.#player2Id, 100, 75,true);
+    const positionComponent2 = new PositionComponent(this.#player2Id, 100, 75,MOVEMENT_SPEED,true);
     
 
 
@@ -125,11 +142,11 @@ export class Game{
     this.#componentManager.addComponent(positionComponent2);
 
 
-
-    const healthComponent1= new HealthComponent(this.#player1Id);
+    let maxHealth=fairGame?100:undefined
+    const healthComponent1= new HealthComponent(this.#player1Id,maxHealth);
+    const healthComponent2= new HealthComponent(this.#player2Id,maxHealth);
+    
     this.#componentManager.addComponent(healthComponent1)
-
-    const healthComponent2= new HealthComponent(this.#player2Id);
     this.#componentManager.addComponent(healthComponent2)
 
 

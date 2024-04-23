@@ -42,5 +42,9 @@ export class RenderComponent extends BaseComponent{
         this.#htmlComponent.style.visibility="hidden";
     }
 
+    blur(){
+        this.#htmlComponent.style.filter="sepia(100%)"
+    }
+
 
 }

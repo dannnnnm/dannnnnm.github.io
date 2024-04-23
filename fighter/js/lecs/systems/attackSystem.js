@@ -4,6 +4,7 @@ import { OwnerComponent } from "../components/ownerComponent.js";
 import { PositionComponent, Vector2D } from "../components/positionComponent.js";
 import { RenderComponent } from "../components/renderComponent.js";
 import { MOVEMENT_SPEED } from "../game.js";
+import { playSound } from "../utils/utils.js";
 import { BaseSystem } from "./baseSystem.js";
 import { overlaps } from "./collisionSystem.js";
 
@@ -24,6 +25,7 @@ export class AttackSystem extends BaseSystem{
     #player1Attack
     #player2Attack
     #entityManager
+
     constructor(player1Id,player2Id,componentManager,entitiyManager,config={},logger){
         super(componentManager,logger)
         this.#player1Collisions=this.componentManager.getEntityComponentByType(player1Id,COLLISION_COMPONENT)
@@ -41,6 +43,7 @@ export class AttackSystem extends BaseSystem{
         this.#player1Id=player1Id
         this.#player2Id=player2Id
         this.#entityManager=entitiyManager
+
 
     }
 
@@ -60,9 +63,11 @@ export class AttackSystem extends BaseSystem{
             //ataque desperdiciado
             if (this.#player1Attack.prepared()){
                 this.#player1Attack.miss();
+                playSound("audio/whoosh.m4a")
             }
             if (this.#player2Attack.prepared()){
                 this.#player2Attack.miss();
+                playSound("audio/whoosh.m4a")
             }
             
 
@@ -92,7 +97,7 @@ export class AttackSystem extends BaseSystem{
 
             let projectileX=playerPosition.x+playerCollision.width/2
             let projectileY=playerPosition.y+playerCollision.height/2
-            let projectilePositionComponent=new PositionComponent(projectileId,projectileX,projectileY)
+            let projectilePositionComponent=new PositionComponent(projectileId,projectileX,projectileY,1.25*MOVEMENT_SPEED)
             projectilePositionComponent.velocity=direction;
             this.componentManager.addComponent(projectilePositionComponent)
 
@@ -107,14 +112,18 @@ export class AttackSystem extends BaseSystem{
             
             let projectileOwnerComponent=new OwnerComponent(projectileId,playerCollision.entityId,damage);
             this.componentManager.addComponent(projectileOwnerComponent)
+
+            
+            playSound("audio/projthrow.wav",0.3)
         }
     }
 
     _attackOther(selfAttack,selfHealth,otherHealth){
         if (selfAttack.prepared()){
-            let attackSound=new Audio("audio/bonk.m4a")
+            
             otherHealth.hurt(selfAttack.attack())
-            attackSound.play()
+            
+            playSound("audio/bonk.m4a",0.5)
         }
         
     }

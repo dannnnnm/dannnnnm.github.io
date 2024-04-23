@@ -1,6 +1,7 @@
 import { COLLISION_COMPONENT, HEALTH_COMPONENT, OWNER_COMPONENT, POSITION_COMPONENT, RENDER_COMPONENT, arenaElement } from "../components/constants.js";
+import { PositionComponent } from "../components/positionComponent.js";
 import { MOVEMENT_SPEED } from "../game.js";
-import { getRndInteger } from "../utils/utils.js";
+import { getRndInteger, playSound } from "../utils/utils.js";
 import { BaseSystem } from "./baseSystem.js";
 
 
@@ -10,12 +11,23 @@ export class CollisionSystem extends BaseSystem{
     #player2Collisions
     #player1Position
     #player2Position
+
+    //mutaciones
+    #bouncingBetty
+    #staticBetty
+    #risingTension
+    #repelPhys
     constructor(player1Id,player2Id,componentManager,config={},logger){
         super(componentManager,logger)
         this.#player1Collisions=this.componentManager.getEntityComponentByType(player1Id,COLLISION_COMPONENT)
         this.#player2Collisions=this.componentManager.getEntityComponentByType(player2Id,COLLISION_COMPONENT)
         this.#player1Position=this.componentManager.getEntityComponentByType(player1Id,POSITION_COMPONENT)
         this.#player2Position=this.componentManager.getEntityComponentByType(player2Id,POSITION_COMPONENT)
+        this.#bouncingBetty=config.bouncingBetty
+        this.#staticBetty=config.staticBetty
+        this.#risingTension=config.risingTension!=null?config.risingTension:1
+        console.log("rising tension is",this.#risingTension)
+        this.#repelPhys=config.repelPhys
     }
 
     update(){
@@ -43,6 +55,26 @@ export class CollisionSystem extends BaseSystem{
             positionComponent.velocity.y=0;
             result=false
         }
+
+        
+        return result
+        
+    }
+
+    _projectileInbounds(positionComponent,collisionComponent){
+        let futureX=positionComponent.x+(positionComponent.velocity.x*MOVEMENT_SPEED);
+        let futureY=positionComponent.y+(positionComponent.velocity.y*MOVEMENT_SPEED);
+        let result=true;
+
+        
+        //TODO: función de OOB especial para projectiles, eliminarlos si es necesario
+        if (futureX<arenaElement.getBoundingClientRect().left || futureX+collisionComponent.width>arenaElement.getBoundingClientRect().right){
+            result=false
+        }
+        if (futureY<arenaElement.getBoundingClientRect().top || futureY+collisionComponent.height>arenaElement.getBoundingClientRect().bottom){
+            result=false
+        }
+
 
         
         return result
@@ -82,9 +114,9 @@ export class CollisionSystem extends BaseSystem{
             if (overlapX > overlapY) {
                 // Move along Y axis
                 let newPos1=this.#player1Position.asVector();
-                newPos1.x+=this.#player1Position.velocity.x*MOVEMENT_SPEED;
+                newPos1.x+=this.#player1Position.velocity.x*this.#player1Position.movementSpeed;
                 let newPos2=this.#player2Position.asVector();
-                newPos2.x+=this.#player2Position.velocity.x*MOVEMENT_SPEED;
+                newPos2.x+=this.#player2Position.velocity.x*this.#player2Position.movementSpeed;
                 let futurePosOverlap=overlaps(newPos1,newPos2,player1Width,player2Width,player1Height,player2Height);
                 if (this.#player1Position.velocity.x==this.#player2Position.velocity.x){
 
@@ -96,9 +128,9 @@ export class CollisionSystem extends BaseSystem{
             } else {
                 // Move along X axis
                 let newPos1=this.#player1Position.asVector();
-                newPos1.y+=this.#player1Position.velocity.y*MOVEMENT_SPEED;
+                newPos1.y+=this.#player1Position.velocity.y*this.#player1Position.movementSpeed;;
                 let newPos2=this.#player2Position.asVector();
-                newPos2.y+=this.#player2Position.velocity.y*MOVEMENT_SPEED;
+                newPos2.y+=this.#player2Position.velocity.y*this.#player2Position.movementSpeed;;
                 // evitar que no puedan retroceder.
                 let futurePosOverlap=overlaps(newPos1,newPos2,player1Width,player2Width,player1Height,player2Height);
                 if (this.#player1Position.velocity.y==this.#player2Position.velocity.y){
@@ -121,14 +153,82 @@ export class CollisionSystem extends BaseSystem{
             
             let projectilePositionComponent=this.componentManager.getEntityComponentByType(ownerComponent.entityId,POSITION_COMPONENT)
             let projectileCollisionComponent=this.componentManager.getEntityComponentByType(ownerComponent.entityId,COLLISION_COMPONENT)
-            if (!this._playerInbounds(projectilePositionComponent,projectileCollisionComponent)){
-                ownerComponent.disable()
-                projectilePositionComponent.velocity.x=0
-                projectilePositionComponent.velocity.y=0
-                this.componentManager.getEntityComponentByType(ownerComponent.entityId,RENDER_COMPONENT).invisible()
+            let projectileRenderComponent=this.componentManager.getEntityComponentByType(ownerComponent.entityId,RENDER_COMPONENT)
+            if (!this._projectileInbounds(projectilePositionComponent,projectileCollisionComponent)){
+                if(this.#bouncingBetty){
+                    this._bounceProjectile(ownerComponent,projectilePositionComponent,projectileCollisionComponent,projectileRenderComponent,arenaElement.getBoundingClientRect())
+                    
+                    playSound("audio/bounce.wav",0.2)
+                }
+                else{
+                    this._disableProjectile(ownerComponent,projectilePositionComponent)
+                }
+            
             }
             this._checkProjectileOverlaps(ownerComponent,projectilePositionComponent,projectileCollisionComponent)        
         });
+    }
+
+    _bounceProjectile(ownerComponent,projectilePositionComponent,projectileCollisionComponent,projectileRenderComponent,boundingBox){
+        //hacer que el creador sea vulnerable
+        ownerComponent.ownerId="NONE"
+        //let arenaBound=arenaElement.getBoundingClientRect();
+        let changedDirection=false;
+        let futureX=projectilePositionComponent.x+projectilePositionComponent.velocity.x*projectilePositionComponent.movementSpeed;
+        let futureY=projectilePositionComponent.y+projectilePositionComponent.velocity.y*projectilePositionComponent.movementSpeed;
+        if(futureY<boundingBox.top){
+            projectilePositionComponent.velocity.y*=-1;
+            changedDirection=true
+            ownerComponent.bounces++
+        }
+        if(futureY+projectileCollisionComponent.height>boundingBox.bottom){
+            projectilePositionComponent.velocity.y*=-1;
+            changedDirection=true
+            ownerComponent.bounces++
+        }
+        if(futureX<boundingBox.left){
+            projectilePositionComponent.velocity.x*=-1;
+            changedDirection=true
+            ownerComponent.bounces++
+        }
+        if(futureX+projectileCollisionComponent.width>boundingBox.right){
+            projectilePositionComponent.velocity.x*=-1;
+            changedDirection=true
+            ownerComponent.bounces++
+        }
+
+        //looks good to me!
+        let newProjPost=new PositionComponent(projectileCollisionComponent.entityId,projectilePositionComponent.x,projectilePositionComponent.y,projectileCollisionComponent.movementSpeed)
+        newProjPost.x+=newProjPost.velocity.x*newProjPost.movementSpeed
+        newProjPost.y+=newProjPost.velocity.y*newProjPost.movementSpeed
+        this._OOBFailsafe(newProjPost,projectileCollisionComponent);
+        
+        //variacion de rebote
+        let shouldVary=getRndInteger(0,99)%6==0
+        let positiveCoordinate=getRndInteger(0,99)%7==0
+        if (changedDirection){
+            projectileRenderComponent.blur()
+        }
+        if (projectilePositionComponent.velocity.x==0 && shouldVary && !this.#staticBetty){
+            projectilePositionComponent.velocity.x=positiveCoordinate?1:-1
+        }
+        if (projectilePositionComponent.velocity.y==0 && shouldVary && !this.#staticBetty){
+            projectilePositionComponent.velocity.y=positiveCoordinate?1:-1
+        }
+
+        
+        if (this.#risingTension && changedDirection){
+            console.log("damage b4",ownerComponent.damage)
+            ownerComponent.damage+=this.#risingTension;
+            console.log("damage l8r",ownerComponent.damage)
+        }
+    }
+
+    _disableProjectile(ownerComponent,projectilePositionComponent){
+        ownerComponent.disable()
+        projectilePositionComponent.velocity.x=0
+        projectilePositionComponent.velocity.y=0
+        this.componentManager.getEntityComponentByType(ownerComponent.entityId,RENDER_COMPONENT).invisible()
     }
 
     _checkProjectileOverlaps(ownerComponent,projectilePositionComponent,projectileCollisionComponent){
@@ -149,11 +249,32 @@ export class CollisionSystem extends BaseSystem{
                                                 projectileCollisionComponent.width,otherCollisionComponent.width,
                                                     projectileCollisionComponent.height,otherCollisionComponent.height)
                 if (positionOverlaps[0] && positionOverlaps[1]){
+                    if (this.#repelPhys && otherHealthComponent.alive){
+                        let roll=getRndInteger(0,otherHealthComponent.maxHealth)//*(2/3)
+                        console.log("roll",roll)
+                        let bounces=ownerComponent.bounces==0?1:ownerComponent.bounces
+                        if (roll>=otherHealthComponent.percentage && roll%bounces==0){
+                            let projectileRenderComponent=this.componentManager.getEntityComponentByType(projectileCollisionComponent.entityId,RENDER_COMPONENT)
+                            let otherRenderComponent=this.componentManager.getEntityComponentByType(otherCollisionComponent.entityId,RENDER_COMPONENT)
+                            this._bounceProjectile(ownerComponent,projectilePositionComponent,projectileCollisionComponent,projectileRenderComponent,otherRenderComponent.htmlElement().getBoundingClientRect())
+                            ownerComponent.divertedBy=otherHealthComponent.entityId
+                            ownerComponent.ownerId=otherHealthComponent.entityId
+                            return
+                        }
+                        else if (ownerComponent.divertedBy==otherHealthComponent.entityId){
+                            ownerComponent.divertedBy=null
+                            ownerComponent.ownerId="NONE"
+                            return
+                        }
+                    }
+                    
                     otherHealthComponent.hurt(ownerComponent.damage)
                     ownerComponent.disable()
                     projectilePositionComponent.velocity.x=0
                     projectilePositionComponent.velocity.y=0
                     this.componentManager.getEntityComponentByType(ownerComponent.entityId,RENDER_COMPONENT).invisible()
+                    
+                    playSound("audio/projhit.wav",0.25)
                 }
             }
         })

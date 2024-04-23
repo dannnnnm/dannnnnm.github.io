@@ -7,12 +7,14 @@ export class ProjectileComponent extends BaseComponent{
     #damageMin
     ownerId
     cooledDown
-    constructor(entityId,damageMin=5,damageMax=10){
+    #cooldownTime
+    constructor(entityId,damageMin=5+3,damageMax=10+3,coolDownTime=800){
         super(entityId)
         this.#willAttack=false;
         this.#damageMin=damageMin
         this.#damageMax=damageMax
         this.cooledDown=true
+        this.#cooldownTime=coolDownTime
     }
 
     get canAttack(){
@@ -23,7 +25,7 @@ export class ProjectileComponent extends BaseComponent{
         let cancellationId=setTimeout(function(){
             this.cooledDown=true
             clearTimeout(cancellationId)
-        }.bind(this),500)
+        }.bind(this),this.#cooldownTime)
     }
 
     

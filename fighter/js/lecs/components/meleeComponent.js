@@ -6,12 +6,16 @@ export class MeleeComponent extends BaseComponent{
     #damageMax
     #damageMin
     cooledDown
-    constructor(entityId,damageMin=5,damageMax=10){
+    #coolDownTime
+    #combo
+    constructor(entityId,damageMin=5,damageMax=10,coolDownTime=450){
         super(entityId)
         this.#willAttack=false;
         this.#damageMin=damageMin
         this.#damageMax=damageMax
         this.cooledDown=true
+        this.#coolDownTime=coolDownTime
+        this.#combo=0
     }
 
 
@@ -23,12 +27,12 @@ export class MeleeComponent extends BaseComponent{
         let cancellationId=setTimeout(function(){
             this.cooledDown=true
             clearTimeout(cancellationId)
-        }.bind(this),350)
+        }.bind(this),this.#coolDownTime)
     }
 
 
     prepareAttack(){
-        console.log("on preparing...", this)
+        //console.log("on preparing...", this)
         if(this.cooledDown){
             this.#willAttack=true
             this.cooledDown=false
@@ -42,17 +46,21 @@ export class MeleeComponent extends BaseComponent{
         if (this.#willAttack){
             this.#willAttack=false
             this.recoverAttack()
-            return getRndInteger(this.#damageMin,this.#damageMax)
+            let damage=this.#damageMin+getRndInteger(this.#damageMin,this.#damageMax)*this.#combo
+            this.#combo++
+            return damage
         }
         return 0;
     }
 
 
     miss(){
-        
-        let missSound=new Audio("audio/whoosh.m4a")
         this.#willAttack=false
         this.recoverAttack()
-        missSound.play()
+        this.#combo=0
+    }
+
+    get combo(){
+        return this.#combo
     }
 }
