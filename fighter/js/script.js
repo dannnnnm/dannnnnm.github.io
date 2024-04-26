@@ -114,7 +114,11 @@ selectEdmMusic.onclick=function(){
   changeMusic("audio/princess.m4a")
   selectEdmMusic.blur()
 }
-
+let selectRelMusic=document.getElementById("reloadedMusic")
+selectRelMusic.onclick=function(){
+  changeMusic("../audio/snd_battle_accion.mid")
+  selectRelMusic.blur()
+}
 
 audio.play().then(
   (result)=>{
