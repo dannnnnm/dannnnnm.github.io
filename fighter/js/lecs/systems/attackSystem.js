@@ -140,7 +140,7 @@ export class AttackSystem extends BaseSystem {
     _attackOther(selfAttack, selfHealth, otherHealth, manaComponent) {
 
         if (selfAttack.prepared()) {
-            if (manaComponent.currentMana < 15) {
+            if (manaComponent.currentMana < manaComponent.meleeDrainAmount) {
                 console.log("no hay mana suficiente")
                 selfAttack.forceUnprepare()
                 return;
