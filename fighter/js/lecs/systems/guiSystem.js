@@ -24,6 +24,9 @@ export class GuiSystem extends BaseSystem{
 
     #player1ManaComponent
     #player2ManaComponent
+
+    #player1ManaBar
+    #player2ManaBar
     constructor(player1Id,player2Id,componentManager,config={},logger){
         super(componentManager,logger)
         this.#player1HpBarElement=document.getElementById("heroHealth")
@@ -37,6 +40,10 @@ export class GuiSystem extends BaseSystem{
 
         this.#player1ManaTextElement=document.getElementById("p1-mana")
         this.#player2ManaTextElement=document.getElementById("p2-mana")
+
+        this.#player1ManaBar=document.getElementById("heroMana")
+        this.#player2ManaBar=document.getElementById("enemyMana")
+
 
         this.#player1HealthComponent=componentManager.getEntityComponentByType(player1Id,HEALTH_COMPONENT)
         this.#player2HealthComponent=componentManager.getEntityComponentByType(player2Id,HEALTH_COMPONENT)
@@ -68,7 +75,8 @@ export class GuiSystem extends BaseSystem{
         this.#player1ManaTextElement.innerText="Mana: "+this.#player1ManaComponent.currentMana
         this.#player2ManaTextElement.innerText="Mana: "+this.#player2ManaComponent.currentMana
 
-
+        this.#player1ManaBar.style.width=this.#player1ManaComponent.percentage+"%"
+        this.#player2ManaBar.style.width=this.#player2ManaComponent.percentage+"%"
         //let highestHealth=0;
         /*if (enemy.maxhealth>hero.maxhealth){
             highestHealth=enemy.maxhealth    
