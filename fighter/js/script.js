@@ -116,7 +116,7 @@ selectEdmMusic.onclick=function(){
 }
 let selectRelMusic=document.getElementById("reloadedMusic")
 selectRelMusic.onclick=function(){
-  changeMusic("../audio/snd_battle_accion.mid")
+  changeMusic("audio/Batallapkmn.mp3")
   selectRelMusic.blur()
 }
 
