@@ -82,6 +82,9 @@ export class AttackSystem extends BaseSystem {
             manaComponent.drainMelee()
             playSound("audio/whoosh.m4a")
         }
+        else{
+            attackComponent.forceUnprepare()
+        }
 
     }
 
@@ -135,6 +138,7 @@ export class AttackSystem extends BaseSystem {
         if (selfAttack.prepared()) {
             if (manaComponent.currentMana < 15) {
                 console.log("no hay mana suficiente")
+                selfAttack.forceUnprepare()
                 return;
             }
             manaComponent.drainMelee()
