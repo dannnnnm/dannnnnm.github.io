@@ -67,11 +67,9 @@ export class AttackSystem extends BaseSystem {
             //ataque desperdiciado
             if (this.#player1Attack.prepared()) {
                 this._playerMissAttack(this.#player1Attack, this.#player1Mana)
-                playSound("audio/whoosh.m4a")
             }
             if (this.#player2Attack.prepared()) {
                 this._playerMissAttack(this.#player2Attack, this.#player2Mana)
-                playSound("audio/whoosh.m4a")
             }
 
 
