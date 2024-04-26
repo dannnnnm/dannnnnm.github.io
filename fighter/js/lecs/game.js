@@ -152,9 +152,10 @@ export class Game{
     if (fairGame==''){
       maxHealth=100
     }
-    else{
+    else if (fairGame){
       maxHealth=fairGame
     }
+    console.log("fairgaem",fairGame)
     const healthComponent1= new HealthComponent(this.#player1Id,maxHealth);
     const healthComponent2= new HealthComponent(this.#player2Id,maxHealth);
     
