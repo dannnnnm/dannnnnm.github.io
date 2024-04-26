@@ -40,6 +40,11 @@ export class MeleeComponent extends BaseComponent{
         
     }
 
+    forceUnprepare(){
+        this.#willAttack=false;
+        this.cooledDown=true
+    }
+
 
 
     attack(){

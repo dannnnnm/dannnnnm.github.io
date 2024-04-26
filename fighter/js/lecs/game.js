@@ -56,7 +56,7 @@ export class Game{
 
     
     let fairGamePresence=searchParams.get("fairGame")
-    let fairGameValue=fairGamePresence!=''?parseInt(fairGamePresence):undefined
+    let fairGameValue=fairGamePresence!=''?parseInt(fairGamePresence):fairGamePresence
     this._initComponents(fairGameValue)
 
     let meleeOnly=searchParams.has("meleeOnly")
@@ -148,7 +148,13 @@ export class Game{
     this.#componentManager.addComponent(positionComponent2);
 
 
-    let maxHealth=fairGame?fairGame:undefined
+    let maxHealth
+    if (fairGame==''){
+      maxHealth=100
+    }
+    else{
+      maxHealth=fairGame
+    }
     const healthComponent1= new HealthComponent(this.#player1Id,maxHealth);
     const healthComponent2= new HealthComponent(this.#player2Id,maxHealth);
     

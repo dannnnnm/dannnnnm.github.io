@@ -1,6 +1,7 @@
 
 import { clickResetButton } from "../../script.js";
 import { HEALTH_COMPONENT, MELEE_COMPONENT, POSITION_COMPONENT, PROJECTILE_COMPONENT } from "../components/constants.js";
+import { FacingDirection } from "../components/positionComponent.js";
 import { MOVEMENT_SPEED } from "../game.js";
 import { BaseSystem } from "./baseSystem.js";
 
@@ -63,6 +64,7 @@ export class InputSystem extends BaseSystem{
             player1Projectile.prepareAttack()
             //this.#pressedKeys.delete("KeyM")
         }
+        this._setFacingDirection(player1Pos)
     }
 
     _updatePlayer2(){
@@ -89,6 +91,39 @@ export class InputSystem extends BaseSystem{
         if (this.#pressedKeys.has("KeyH") && !this.#meleeOnly){
             player2Projectile.prepareAttack()
             //this.#pressedKeys.delete("KeyH")
+        }
+        this._setFacingDirection(player2Pos)
+    }
+
+    _setFacingDirection(positionComponent){
+        let velocity=positionComponent.velocity
+        if (velocity.x == velocity.y){
+            if (velocity.x==1){
+                positionComponent.facingDirection=FacingDirection.DDOWNRIGHT
+            }
+            else if (velocity.x==-1){
+                positionComponent.facingDirection=FacingDirection.DUPLEFT
+            }
+        }
+        else if (velocity.x == velocity.y*-1){
+            if (velocity.x==1){
+                positionComponent.facingDirection=FacingDirection.DUPRIGHT
+            }
+            else if (velocity.x==-1){
+                positionComponent.facingDirection=FacingDirection.DDOWNLEFT
+            }
+        }
+        else if(velocity.x==1){
+            positionComponent.facingDirection=FacingDirection.RIGHT
+        }
+        else if(velocity.x==-1){
+            positionComponent.facingDirection=FacingDirection.LEFT
+        }
+        else if(velocity.y==1){
+            positionComponent.facingDirection=FacingDirection.DOWN
+        }
+        else if(velocity.y==-1){
+            positionComponent.facingDirection=FacingDirection.UP
         }
     }
 

@@ -62,4 +62,9 @@ export class ProjectileComponent extends BaseComponent{
     miss(){
         this.#willAttack=false
     }
+
+    forceUnprepare(){
+        this.cooledDown=true
+        this.#willAttack=false
+    }
 }
