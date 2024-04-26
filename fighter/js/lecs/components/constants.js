@@ -9,6 +9,7 @@ export const MELEE_COMPONENT = "MeleeComponent";
 export const HEALTH_COMPONENT = "HealthComponent";
 export const PROJECTILE_COMPONENT = "ProjectileComponent";
 export const OWNER_COMPONENT = "OwnerComponent";
+export const MANA_COMPONENT = "ManaComponent";
 
 
 
