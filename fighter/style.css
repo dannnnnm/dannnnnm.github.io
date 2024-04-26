@@ -11,12 +11,13 @@
 }
 
 .arena_img{
-    width: 50vw; 
-    min-width: 50vw;
+    padding-left: 5px;
+    width: 49vw; 
+    min-width: 49vw;
     max-width: 50vw;
     margin: 2px;
-    height:62vh;
-    min-height: 62vh;
+    height:61vh;
+    min-height: 61vh;
     max-height: 62vh;
 }
 
