@@ -91,14 +91,18 @@ export class AttackSystem extends BaseSystem {
     _projectileAttack() {
         let player1Projectile = this.componentManager.getEntityComponentByType(this.#player1Id, PROJECTILE_COMPONENT)
         let player2Projectile = this.componentManager.getEntityComponentByType(this.#player2Id, PROJECTILE_COMPONENT)
-        this._checkPlayerProjectile(player1Projectile, this.#player1Position, this.#player1Collisions)
-        this._checkPlayerProjectile(player2Projectile, this.#player2Position, this.#player2Collisions)
+        this._checkPlayerProjectile(player1Projectile, this.#player1Position, this.#player1Collisions,this.#player1Mana)
+        this._checkPlayerProjectile(player2Projectile, this.#player2Position, this.#player2Collisions,this.#player2Mana)
 
     }
 
-    _checkPlayerProjectile(playerProjectileComponent, playerPosition, playerCollision) {
+    _checkPlayerProjectile(playerProjectileComponent, playerPosition, playerCollision,playerMana) {
 
         if (playerProjectileComponent.prepared()) {
+            if (playerMana.currentMana<playerMana.proyectileDrainAmount){
+                playerProjectileComponent.forceUnprepare()
+                return
+            }
 
             let projectileId = this.#entityManager.addEntity("projectile")
             let damage = playerProjectileComponent.attack()
@@ -128,7 +132,7 @@ export class AttackSystem extends BaseSystem {
             let projectileOwnerComponent = new OwnerComponent(projectileId, playerCollision.entityId, damage);
             this.componentManager.addComponent(projectileOwnerComponent)
 
-
+            playerMana.drainShoot()
             playSound("audio/projthrow.wav", 0.3)
         }
     }
