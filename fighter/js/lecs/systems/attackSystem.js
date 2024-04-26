@@ -89,7 +89,8 @@ export class AttackSystem extends BaseSystem{
             let projectileId=this.#entityManager.addEntity("projectile")
             let damage=playerProjectileComponent.attack()
             
-            let direction=new Vector2D(playerPosition.velocity.x,playerPosition.velocity.y)
+            let facingDirection=playerPosition.facingDirectionAsVector()
+            let direction=new Vector2D(facingDirection.x,facingDirection.y)
             if(direction.x==0 && direction.x==direction.y){
                 direction.x=1;
             }
