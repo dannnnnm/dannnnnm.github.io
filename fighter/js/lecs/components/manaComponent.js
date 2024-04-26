@@ -45,4 +45,8 @@ export class ManaComponent extends BaseComponent{
     get maxMana() {
         return this.#maxMana;
     }
+
+    get percentage(){
+        return (this.currentMana/this.#maxMana)*100
+    }
 }
